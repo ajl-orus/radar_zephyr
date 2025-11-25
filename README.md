@@ -41,7 +41,7 @@ O Radar Eletrônico com Classificação é um sistema embarcado completo desenvo
 
 ## Estrutura do Projeto
    ```
-      radar-eletronico/
+   radar-eletronico/
    ├── CMakeLists.txt
    ├── prj.conf              # Configurações principais
    ├── prj_test.conf         # Configurações para testes
