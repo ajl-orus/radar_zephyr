@@ -202,7 +202,7 @@ Simulação: Gera eventos automáticos para testes
 # Descrição da Arquitetura
 
 ## Diagrama de Arquitetura
-
+```
                          ┌───────────────────────────┐
                          │         Aplicação         │
                          │     (control.c/main)      │
@@ -237,7 +237,7 @@ Simulação: Gera eventos automáticos para testes
       │ classify_vehicle()          │   │ camera_capture()   │       │ reset_system_stats() │
       │ determine_direction()       │   └───────────────────┘       └──────────────────────┘
       └─────────────────────────────┘
-
+```
 
 
 ## Threads do Sistema
