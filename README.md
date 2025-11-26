@@ -203,20 +203,23 @@ Simulação: Gera eventos automáticos para testes
 
 ## Diagrama de Arquitetura
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   SENSORES      │    │   CONTROLE       │    │    DISPLAY      │
-│                 │    │                  │    │                 │
-│ GPIO 5 - Eixos  │───▶│  Classificação   │───▶│  Cores ANSI     │
-│ GPIO 6 - Veloc. │    │  Cálculo Veloc.  │    │  Status Visual  │
-└─────────────────┘    │  Detecção Infr.  │    └─────────────────┘
-                       └─────────┬────────┘
-                                 │
-                       ┌─────────▼────────┐
-                       │     CÂMERA       │
-                       │                  │
-                       │  Captura Placa   │
-                       │  Validação       │
-                       └──────────────────┘
+flowchart TD
+    subgraph HW[Hardware]
+        RADAR["Radar (sensor)"]
+        CAM["Câmera"]
+    end
+
+    subgraph FW[Firmware - Zephyr RTOS]
+        SENSORMOD["sensor.c\n• Leitura radar\n• Publica em radar_msg (ZBus)"]
+        CONTROLMOD["control.c\n• Processa radar_msg\n• Lógica de alvo\n• Publica camera_cmd (ZBus)"]
+        CAMERAMOD["camera.c\n• Recebe camera_cmd\n• Captura imagem\n• Interage com hardware"]
+    end
+
+    RADAR --> SENSORMOD
+    SENSORMOD -->|radar_msg (ZBus)| CONTROLMOD
+    CONTROLMOD -->|camera_cmd (ZBus)| CAMERAMOD
+    CAM --> CAMERAMOD
+
 ```
 
 ## Threads do Sistema
