@@ -203,22 +203,41 @@ Simulação: Gera eventos automáticos para testes
 
 ## Diagrama de Arquitetura
 
-flowchart TD
-    subgraph HW[Hardware]
-        RADAR["Radar (sensor)"]
-        CAM["Câmera"]
-    end
+                         ┌───────────────────────────┐
+                         │         Aplicação         │
+                         │     (control.c/main)      │
+                         └─────────────┬─────────────┘
+                                       │
+                         Public API (radar.h)
+                                       │
+      ┌────────────────────────────────┼────────────────────────────────┐
+      │                                │                                │
+      ▼                                ▼                                ▼
+┌─────────────┐                ┌────────────────┐               ┌─────────────────┐
+│  Sensores   │                │     Câmera     │               │     Display     │
+│ (sensor.c)  │                │ (camera.c)     │               │  (display.c)    │
+└──────┬──────┘                └────────┬───────┘               └────────┬────────┘
+       │                                 │                              │
+       │ IRQ / Fila                       │ ZBus: camera_trigger         │ Atualização periódica
+       ▼                                 ▼                              ▼
+┌─────────────────────────────┐   ┌────────────────────────┐   ┌────────────────────────┐
+│  Fila vehicle_data_queue    │   │ camera_result_chan      │   │ system_status_chan     │
+│  (dados brutos do sensor)   │   │ (resultado da câmera)   │   │ system_stats_chan      │
+└───────────────┬─────────────┘   └──────────────┬─────────┘   └──────────────┬─────────┘
+                │                                │                             │
+                ▼                                ▼                             ▼
+      ┌────────────────┐                ┌────────────────┐             ┌─────────────────┐
+      │ CLASSIFICAÇÃO  │                │  RECONHECIMENTO│             │ ESTATÍSTICAS    │
+      │ & VELOCIDADE   │                │  DE PLACAS     │             │ (stats global)  │
+      └──────┬─────────┘                └──────┬─────────┘             └───────┬──────────┘
+             │                                  │                              │
+             ▼                                  ▼                              ▼
+      ┌─────────────────────────────┐   ┌───────────────────┐       ┌──────────────────────┐
+      │ calculate_speed()           │   │ validate_plate()   │       │ update_system_stats()│
+      │ classify_vehicle()          │   │ camera_capture()   │       │ reset_system_stats() │
+      │ determine_direction()       │   └───────────────────┘       └──────────────────────┘
+      └─────────────────────────────┘
 
-    subgraph FW[Firmware - Zephyr RTOS]
-        SENSORMOD["sensor.c\n• Leitura radar\n• Publica em radar_msg (ZBus)"]
-        CONTROLMOD["control.c\n• Processa radar_msg\n• Lógica de alvo\n• Publica camera_cmd (ZBus)"]
-        CAMERAMOD["camera.c\n• Recebe camera_cmd\n• Captura imagem\n• Interage com hardware"]
-    end
-
-    RADAR --> SENSORMOD
-    SENSORMOD -->|radar_msg (ZBus)| CONTROLMOD
-    CONTROLMOD -->|camera_cmd (ZBus)| CAMERAMOD
-    CAM --> CAMERAMOD
 
 
 ## Threads do Sistema
