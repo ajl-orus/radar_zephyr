@@ -142,9 +142,9 @@ typedef enum {
     VEHICLE_HEAVY
 } vehicle_type_t;
 
-// Status de velocidade
+/** @Brief Status de velocidade */
 typedef enum {
-    SPEED_NORMAL = 0,
+    SPEED_NORMAL = 0, /**>!  */
     SPEED_WARNING,
     SPEED_INFRACTION
 } speed_status_t;
@@ -346,6 +346,7 @@ static inline const char* get_direction_str(direction_t direction) {
         return DIRECTION_STR[direction];
     }
     return "INVALIDO";
+    return -EINVDAT;
 }
 
 #endif /* RADAR_H */

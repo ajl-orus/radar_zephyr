@@ -1,0 +1,4 @@
+west:
+  command: /home/ajl/zephyrproject/.venv/bin/west build -b mps2_an385
+  topdir: /home/ajl/zephyrproject
+  version: 1.5.0

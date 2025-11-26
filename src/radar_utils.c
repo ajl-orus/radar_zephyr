@@ -40,7 +40,13 @@ void radar_print_configuration(void)
 
 void update_system_stats(vehicle_type_t type, bool infringement, bool camera_fail)
 {
-    k_mutex_lock(&stats_mutex, K_FOREVER);
+    int ret = k_mutex_lock(&stats_mutex, K_FOREVER);
+
+    //  EXEMPLO DE VERIFICAÇÃO DE ERRO
+    if (ret < 0) {
+        RADAR_ERR("Falha ao travar mutex de estatisticas: %d", ret);
+        return;
+    }
     
     global_stats.total_vehicles++;
     
