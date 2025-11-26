@@ -202,7 +202,7 @@ Simulação: Gera eventos automáticos para testes
 # Descrição da Arquitetura
 
 ## Diagrama de Arquitetura
-```
+
 flowchart TD
     subgraph HW[Hardware]
         RADAR["Radar (sensor)"]
@@ -220,7 +220,6 @@ flowchart TD
     CONTROLMOD -->|camera_cmd (ZBus)| CAMERAMOD
     CAM --> CAMERAMOD
 
-```
 
 ## Threads do Sistema
 
